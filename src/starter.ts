@@ -426,6 +426,16 @@ async function setupTls(mysql: installer.MySQL, baseDir: string): Promise<void> 
     ],
     options,
   );
+  await exec.exec(
+    openssl,
+    [
+      "x509",
+      "-text",
+      "-in",
+      `${datadir}${sep}server-cert.pem`,
+    ],
+    options,
+  );
 }
 
 // execute "mysql_install_db --help" and return its result
