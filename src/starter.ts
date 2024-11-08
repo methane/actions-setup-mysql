@@ -75,6 +75,8 @@ export async function startMySQL(
   config["client"]["port"] = config["mysqld"]["port"];
   config["client"]["host"] = "127.0.0.1";
   config["client"]["socket"] = config["mysqld"]["socket"];
+  config["client-mariadb"] ||= {};
+  config["client-mariadb"]["ssl-verify-server-cert"] = "0";
 
   await core.group("setup MySQL Database", async () => {
     core.info(`creating the directory structure on ${baseDir}`);

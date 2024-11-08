@@ -98,17 +98,21 @@ jobs:
       - run: |
           mysql --help
       - run: |
-          mysql --ssl-mode=VERIFY_CA --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+          mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
           mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
           mysql --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
-      - run: |
+      - name: mysql
+        if: ${{ !startsWith( matrix.mysql, 'mariadb') }}
+        run: |
           mysql --ssl-mode=REQUIRED -h 127.0.0.1 --user=root -pvery-very-secret -e status
-      - run: |
           mysql --ssl-mode=VERIFY_CA -h 127.0.0.1 --user=root -pvery-very-secret -e status
-      - run: |
           mysql --ssl-mode=VERIFY_IDENTITY -h 127.0.0.1 --user=root -pvery-very-secret -e status
+      - name: mariadb
+        if: startsWith( matrix.mysql, 'mariadb')
+        run: |
+          mysql --ssl -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - name: test
         run: |
           prove -v t
