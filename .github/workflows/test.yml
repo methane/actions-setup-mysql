@@ -107,6 +107,9 @@ jobs:
       - name: x5
         run: |
           mariadb --ssl --disable-ssl-verify-server-cert -h 127.0.0.1 --user=root -pvery-very-secret -e status
+      - name: x5
+        run: |
+          mariadb --ssl -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - name: test
         run: |
           prove -v t
