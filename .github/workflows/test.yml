@@ -107,8 +107,8 @@ jobs:
         if: ${{ !startsWith( matrix.mysql, 'mariadb') }}
         run: |
           mysql --ssl-mode=REQUIRED -h 127.0.0.1 --user=root -pvery-very-secret -e status
-          mysql --ssl-mode=VERIFY_CA -h 127.0.0.1 --user=root -pvery-very-secret -e status
-          mysql --ssl-mode=VERIFY_IDENTITY -h 127.0.0.1 --user=root -pvery-very-secret -e status
+          mysql --ssl-mode=VERIFY_CA --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" -h 127.0.0.1 --user=root -pvery-very-secret -e status
+          mysql --ssl-mode=VERIFY_IDENTITY --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - name: mariadb
         if: startsWith( matrix.mysql, 'mariadb')
         run: |
