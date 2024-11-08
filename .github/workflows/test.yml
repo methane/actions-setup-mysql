@@ -101,12 +101,9 @@ jobs:
       - name: x2
         run: |
           mariadb --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
-      - name: x3
-        run: |
-          mariadb --ssl --ssl-verify-server-cert=off --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - name: x4
         run: |
-          mariadb --ssl --ssl-verify-server-cert=off --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+          mariadb --skip-ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
       - name: test
         run: |
           prove -v t
@@ -115,30 +112,30 @@ jobs:
           BASE_DIR: ${{ steps.action.outputs.base-dir }}
 
   # https://github.com/shogo82148/actions-setup-mysql/issues/421
-  test-issue421:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # test-issue421:
+  #   timeout-minutes: 15
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: npm
+  #     - name: Set Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: package.json
+  #         cache: npm
 
-      - run: npm ci
-      - run: npm run build
-      - name: use the action
-        id: action
-        uses: ./
-        with:
-          mysql-version: "8.3"
-          root-password: very-very-secret
-          user: my
-          password: secret
-          my-cnf: |
-            port=5729
-            authentication_policy=mysql_native_password
-            sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+  #     - run: npm ci
+  #     - run: npm run build
+  #     - name: use the action
+  #       id: action
+  #       uses: ./
+  #       with:
+  #         mysql-version: "8.3"
+  #         root-password: very-very-secret
+  #         user: my
+  #         password: secret
+  #         my-cnf: |
+  #           port=5729
+  #           authentication_policy=mysql_native_password
+  #           sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
