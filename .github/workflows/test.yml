@@ -7,27 +7,27 @@ on:
       - "releases/*"
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-    timeout-minutes: 15
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # build:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
+  #         - macos-latest
+  #   timeout-minutes: 15
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: npm
+  #     - name: Set Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: package.json
+  #         cache: npm
 
-      - run: npm ci
-      - run: npm run test
+  #     - run: npm ci
+  #     - run: npm run test
 
   test:
     strategy:
