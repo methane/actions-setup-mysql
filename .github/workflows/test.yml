@@ -98,9 +98,9 @@ jobs:
       - run: |
           mysql --help
       - run: |
-          mysql --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+          mysql --ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
-          mysql --skip-ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+          mysql --ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
       - run: |
           mysql --ssl --disable-ssl-verify-server-cert -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - run: |
