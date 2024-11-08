@@ -392,7 +392,7 @@ async function setupTls(mysql: installer.MySQL, baseDir: string): Promise<void> 
     "-keyout",
     `${datadir}${sep}server-key.pem`,
     "-subj",
-    "/CN=127.0.0.1",
+    "/CN=localhost",
     "-out",
     `${datadir}${sep}server-req.pem`,
   ]);
