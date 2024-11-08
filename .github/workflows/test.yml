@@ -98,9 +98,7 @@ jobs:
       - run: |
           mysql --help
       - run: |
-          openssl x509 -text -in "${{ steps.action.outputs.base-dir }}/var/ca.pem"
-          cat "${{ steps.action.outputs.base-dir }}/var/ca.pem" "${{ steps.action.outputs.base-dir }}/var/server-cert.pem" > ca-cert.pem
-          mysql --ssl-ca=ca-cert.pem --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+          mysql --ssl-mode=VERIFY_CA --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
           mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
