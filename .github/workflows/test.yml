@@ -95,9 +95,15 @@ jobs:
           root-password: very-very-secret
           user: my
           password: secret
-      - name: xxxxxxx
+      - name: x1
         run: |
           mariadb --help
+      - name: x2
+        run: |
+          mariadb --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+      - name: x3
+        run: |
+          mariadb --disable-ssl-verify-server-cert --ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - name: test
         run: |
           prove -v t
