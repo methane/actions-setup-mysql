@@ -103,10 +103,10 @@ jobs:
           mariadb --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - name: x3
         run: |
-          mariadb --disable-ssl-verify-server-cert --ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+          mariadb --ssl --ssl-verify-server-cert=off --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - name: x4
         run: |
-          mariadb --disable-ssl-verify-server-cert --ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+          mariadb --ssl --ssl-verify-server-cert=off --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
       - name: test
         run: |
           prove -v t
