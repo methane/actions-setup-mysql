@@ -86,8 +86,8 @@ export async function startMySQL(
 
     // configure my.cnf
     core.info(`writing my.cnf`);
-    core.debug(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
-    core.debug(mycnf.stringify(config));
+    core.info(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
+    core.info(mycnf.stringify(config));
     fs.writeFileSync(path.join(baseDir, "etc", "my.cnf"), mycnf.stringify(config));
 
     const help = await verboseHelp(mysql);
@@ -149,8 +149,8 @@ export async function startMySQL(
 
     // configure my.cnf
     core.info(`add TLS/SSL setting into my.cnf`);
-    core.debug(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
-    core.debug(mycnf.stringify(config));
+    core.info(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
+    core.info(mycnf.stringify(config));
     fs.writeFileSync(path.join(baseDir, "etc", "my.cnf"), mycnf.stringify(config));
 
     // configure TLS

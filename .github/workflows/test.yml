@@ -95,6 +95,9 @@ jobs:
           root-password: very-very-secret
           user: my
           password: secret
+      - name: xxxxxxx
+        run: |
+          mariadb --help
       - name: test
         run: |
           prove -v t
