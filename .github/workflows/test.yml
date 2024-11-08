@@ -49,7 +49,7 @@ jobs:
           # - "8.3"
           # - "8.2"
           # - "8.1"
-          # - "8.0"
+          - "8.0"
           # - "5.7"
           # - "5.6"
           # - "mariadb-11.6"
@@ -95,21 +95,16 @@ jobs:
           root-password: very-very-secret
           user: my
           password: secret
-      - name: x1
-        run: |
-          mariadb --help
-      - name: x2
-        run: |
-          mariadb --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
-      - name: x4
-        run: |
-          mariadb --skip-ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
-      - name: x5
-        run: |
-          mariadb --ssl --disable-ssl-verify-server-cert -h 127.0.0.1 --user=root -pvery-very-secret -e status
-      - name: x5
-        run: |
-          mariadb --ssl -h 127.0.0.1 --user=root -pvery-very-secret -e status
+      - run: |
+          mysql --help
+      - run: |
+          mysql --skip-ssl --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+      - run: |
+          mysql --skip-ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+      - run: |
+          mysql --ssl --disable-ssl-verify-server-cert -h 127.0.0.1 --user=root -pvery-very-secret -e status
+      - run: |
+          mysql --ssl-verify-server-cert -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - name: test
         run: |
           prove -v t
