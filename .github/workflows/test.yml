@@ -104,6 +104,9 @@ jobs:
       - name: x4
         run: |
           mariadb --skip-ssl --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+      - name: x5
+        run: |
+          mariadb --ssl --disable-ssl-verify-server-cert --user=root -pvery-very-secret -e status
       - name: test
         run: |
           prove -v t
