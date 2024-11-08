@@ -145,7 +145,6 @@ export async function startMySQL(
     config["mysqld"]["ssl_ca"] ||= path.join(baseDir, "var", "ca.pem");
     config["mysqld"]["ssl_cert"] ||= path.join(baseDir, "var", "server-cert.pem");
     config["mysqld"]["ssl_key"] ||= path.join(baseDir, "var", "server-key.pem");
-    config["client"]["ssl_ca"] ||= path.join(baseDir, "var", "ca.pem");
 
     // configure my.cnf
     core.info(`add TLS/SSL setting into my.cnf`);
@@ -411,10 +410,12 @@ async function setupTls(mysql: installer.MySQL, baseDir: string): Promise<void> 
       `${datadir}${sep}server-req.pem`,
       "-days",
       "3650",
-      "-CA",
-      `${datadir}${sep}ca.pem`,
-      "-CAkey",
-      `${datadir}${sep}ca-key.pem`,
+      "-key",
+      `${datadir}${sep}server-key.pem`,
+      // "-CA",
+      // `${datadir}${sep}ca.pem`,
+      // "-CAkey",
+      // `${datadir}${sep}ca-key.pem`,
       "-set_serial",
       "01",
       "-extfile",
