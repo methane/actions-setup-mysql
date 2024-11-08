@@ -98,6 +98,9 @@ jobs:
       - run: |
           mysql --help
       - run: |
+          openssl x509 -text -in "${{ steps.action.outputs.base-dir }}/var/ca.pem"
+          mysql "--ssl-ca=${{ steps.action.outputs.base-dir }}/var/ca.pem" --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+      - run: |
           mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
       - run: |
           mysql --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
