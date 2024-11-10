@@ -432,6 +432,16 @@ async function setupTls(mysql: installer.MySQL, baseDir: string): Promise<void> 
       "x509",
       "-text",
       "-in",
+      `${datadir}${sep}ca.pem`,
+    ],
+    options,
+  );
+  await exec.exec(
+    openssl,
+    [
+      "x509",
+      "-text",
+      "-in",
       `${datadir}${sep}server-cert.pem`,
     ],
     options,
