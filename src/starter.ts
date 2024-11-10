@@ -75,6 +75,8 @@ export async function startMySQL(
   config["client"]["port"] = config["mysqld"]["port"];
   config["client"]["host"] = "127.0.0.1";
   config["client"]["socket"] = config["mysqld"]["socket"];
+  config["client-mariadb"] ||= {};
+  config["client-mariadb"]["ssl-verify-server-cert"] = "0";
 
   await core.group("setup MySQL Database", async () => {
     core.info(`creating the directory structure on ${baseDir}`);
@@ -86,8 +88,8 @@ export async function startMySQL(
 
     // configure my.cnf
     core.info(`writing my.cnf`);
-    core.debug(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
-    core.debug(mycnf.stringify(config));
+    core.info(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
+    core.info(mycnf.stringify(config));
     fs.writeFileSync(path.join(baseDir, "etc", "my.cnf"), mycnf.stringify(config));
 
     const help = await verboseHelp(mysql);
@@ -145,11 +147,12 @@ export async function startMySQL(
     config["mysqld"]["ssl_ca"] ||= path.join(baseDir, "var", "ca.pem");
     config["mysqld"]["ssl_cert"] ||= path.join(baseDir, "var", "server-cert.pem");
     config["mysqld"]["ssl_key"] ||= path.join(baseDir, "var", "server-key.pem");
+    // config["client"]["ssl_ca"] ||= path.join(baseDir, "var", "ca.pem");
 
     // configure my.cnf
     core.info(`add TLS/SSL setting into my.cnf`);
-    core.debug(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
-    core.debug(mycnf.stringify(config));
+    core.info(`my.cnf path is ${path.join(baseDir, "etc", "my.cnf")}`);
+    core.info(mycnf.stringify(config));
     fs.writeFileSync(path.join(baseDir, "etc", "my.cnf"), mycnf.stringify(config));
 
     // configure TLS
@@ -419,6 +422,26 @@ async function setupTls(mysql: installer.MySQL, baseDir: string): Promise<void> 
       "-extfile",
       `${__dirname}${sep}..${sep}subjectnames.txt`,
       "-out",
+      `${datadir}${sep}server-cert.pem`,
+    ],
+    options,
+  );
+  await exec.exec(
+    openssl,
+    [
+      "x509",
+      "-text",
+      "-in",
+      `${datadir}${sep}ca.pem`,
+    ],
+    options,
+  );
+  await exec.exec(
+    openssl,
+    [
+      "x509",
+      "-text",
+      "-in",
       `${datadir}${sep}server-cert.pem`,
     ],
     options,

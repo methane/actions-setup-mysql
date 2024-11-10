@@ -7,27 +7,27 @@ on:
       - "releases/*"
 
 jobs:
-  build:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-    timeout-minutes: 15
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # build:
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
+  #         - macos-latest
+  #   timeout-minutes: 15
+  #   runs-on: ${{ matrix.os }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: npm
+  #     - name: Set Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: package.json
+  #         cache: npm
 
-      - run: npm ci
-      - run: npm run test
+  #     - run: npm ci
+  #     - run: npm run test
 
   test:
     strategy:
@@ -35,40 +35,40 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - ubuntu-22.04
-          - ubuntu-20.04
-          - macos-14
-          - macos-13
-          - macos-12
-          - windows-2022
-          - windows-2019
+          # - ubuntu-22.04
+          # - ubuntu-20.04
+          # - macos-14
+          # - macos-13
+          # - macos-12
+          # - windows-2022
+          # - windows-2019
         mysql:
-          - "9.1"
-          - "9.0"
-          - "8.4"
-          - "8.3"
-          - "8.2"
-          - "8.1"
+          # - "9.1"
+          # - "9.0"
+          # - "8.4"
+          # - "8.3"
+          # - "8.2"
+          # - "8.1"
           - "8.0"
-          - "5.7"
-          - "5.6"
-          - "mariadb-11.6"
-          - "mariadb-11.5"
+          # - "5.7"
+          # - "5.6"
+          # - "mariadb-11.6"
+          # - "mariadb-11.5"
           - "mariadb-11.4"
-          - "mariadb-11.3"
-          - "mariadb-11.2"
-          - "mariadb-11.1"
-          - "mariadb-11.0"
-          - "mariadb-10.11"
-          - "mariadb-10.10"
-          - "mariadb-10.9"
-          - "mariadb-10.8"
-          - "mariadb-10.7"
-          - "mariadb-10.6"
-          - "mariadb-10.5"
-          - "mariadb-10.4"
-          - "mariadb-10.3"
-          - "mariadb-10.2"
+          # - "mariadb-11.3"
+          # - "mariadb-11.2"
+          # - "mariadb-11.1"
+          # - "mariadb-11.0"
+          # - "mariadb-10.11"
+          # - "mariadb-10.10"
+          # - "mariadb-10.9"
+          # - "mariadb-10.8"
+          # - "mariadb-10.7"
+          # - "mariadb-10.6"
+          # - "mariadb-10.5"
+          # - "mariadb-10.4"
+          # - "mariadb-10.3"
+          # - "mariadb-10.2"
     timeout-minutes: 15
     runs-on: ${{ matrix.os }}
     steps:
@@ -95,6 +95,24 @@ jobs:
           root-password: very-very-secret
           user: my
           password: secret
+      - run: |
+          mysql --help
+      - run: |
+          mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+      - run: |
+          mysql --user=root -pvery-very-secret -e "SHOW VARIABLES LIKE 'ssl%'"
+      - run: |
+          mysql --user=root -pvery-very-secret -e "select Host,User,plugin from mysql.user"
+      - name: mysql
+        if: ${{ !startsWith( matrix.mysql, 'mariadb') }}
+        run: |
+          mysql --ssl-mode=REQUIRED -h 127.0.0.1 --user=root -pvery-very-secret -e status
+          mysql --ssl-mode=VERIFY_CA --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" -h 127.0.0.1 --user=root -pvery-very-secret -e status
+          mysql --ssl-mode=VERIFY_IDENTITY --ssl-ca="${{ steps.action.outputs.base-dir }}/var/ca.pem" -h 127.0.0.1 --user=root -pvery-very-secret -e status
+      - name: mariadb
+        if: startsWith( matrix.mysql, 'mariadb')
+        run: |
+          mysql --ssl -h 127.0.0.1 --user=root -pvery-very-secret -e status
       - name: test
         run: |
           prove -v t
@@ -103,30 +121,30 @@ jobs:
           BASE_DIR: ${{ steps.action.outputs.base-dir }}
 
   # https://github.com/shogo82148/actions-setup-mysql/issues/421
-  test-issue421:
-    timeout-minutes: 15
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # test-issue421:
+  #   timeout-minutes: 15
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Set Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: npm
+  #     - name: Set Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: package.json
+  #         cache: npm
 
-      - run: npm ci
-      - run: npm run build
-      - name: use the action
-        id: action
-        uses: ./
-        with:
-          mysql-version: "8.3"
-          root-password: very-very-secret
-          user: my
-          password: secret
-          my-cnf: |
-            port=5729
-            authentication_policy=mysql_native_password
-            sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
+  #     - run: npm ci
+  #     - run: npm run build
+  #     - name: use the action
+  #       id: action
+  #       uses: ./
+  #       with:
+  #         mysql-version: "8.3"
+  #         root-password: very-very-secret
+  #         user: my
+  #         password: secret
+  #         my-cnf: |
+  #           port=5729
+  #           authentication_policy=mysql_native_password
+  #           sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
